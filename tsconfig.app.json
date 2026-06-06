@@ -15,6 +15,17 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "app/*": ["src/app/*"],
+      "components/*": ["src/components/*"],
+      "data/*": ["src/data/*"],
+      "hooks/*": ["src/hooks/*"],
+      "layouts/*": ["src/layouts/*"],
+      "pages/*": ["src/pages/*"],
+      "services/*": ["src/services/*"],
+      "styles/*": ["src/styles/*"]
+    },
 
     /* Linting */
     "strict": true,

@@ -3,6 +3,10 @@
     ".": {
       "release-type": "node",
       "package-name": "trading-journal",
+      "component": "trading-journal",
+      "include-component-in-tag": true,
+      "include-v-in-tag": true,
+      "tag-separator": "-",
       "changelog-path": "CHANGELOG.md"
     }
   }

@@ -12,6 +12,14 @@ if (!token || !repository || !Number.isInteger(prNumber)) {
 const octokit = new Octokit({ auth: token })
 const [owner, repo] = repository.split('/')
 
+const secretPatterns = [
+  /sk_live_[a-zA-Z0-9]+/,
+  /AIza[0-9A-Za-z\-_]{35}/,
+  /Bearer\s+[a-zA-Z0-9\-_]+/,
+  /password\s*=\s*["'][^"']+/i,
+  /api_key\s*=\s*["'][^"']+/i,
+]
+
 function getChangedLineNumbers(patch = '') {
   const changedLines = new Set()
   let newLine = 0
@@ -60,6 +68,14 @@ function collectFileComments(file) {
         path: file.filename,
         line: lineNumber,
         body: 'Remove `console.log` before merging.',
+      })
+    }
+
+    if (secretPatterns.some((pattern) => pattern.test(line))) {
+      comments.push({
+        path: file.filename,
+        line: lineNumber,
+        body: 'Potential hardcoded secret or API key detected. Move secrets to environment variables before merging.',
       })
     }
   })

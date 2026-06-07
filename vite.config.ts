@@ -5,6 +5,11 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [react()],
+  server: {
+    proxy: {
+      '/api': 'http://localhost:43117',
+    },
+  },
   resolve: {
     alias: {
       app: fileURLToPath(new URL('./src/app', import.meta.url)),

@@ -19,7 +19,7 @@ type AppShellProviderProps = AppShellContextValue & {
 
 type NavItem = {
   label: string
-  view?: AppView
+  view: AppView
   icon: ReactNode
 }
 
@@ -28,7 +28,7 @@ const AppShellContext = createContext<AppShellContextValue | null>(null)
 const navItems: NavItem[] = [
   { label: 'Dashboard', view: 'dashboard', icon: <ChartIcon /> },
   { label: 'Journals', view: 'journals', icon: <GridIcon /> },
-  { label: 'Calendar', icon: <CalendarIcon /> },
+  { label: 'Calendar', view: 'calendar', icon: <CalendarIcon /> },
 ]
 
 function useAppShell() {
@@ -78,13 +78,8 @@ function Sidebar() {
         {navItems.map((item) => (
           <button
             className={`nav-item ${item.view === activeView ? 'is-active' : ''}`}
-            disabled={!item.view}
             key={item.label}
-            onClick={() => {
-              if (item.view) {
-                onViewChange(item.view)
-              }
-            }}
+            onClick={() => onViewChange(item.view)}
             type="button"
           >
             {item.icon}

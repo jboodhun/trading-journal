@@ -10,6 +10,13 @@ export type Trade = {
   emotion: string
 }
 
+export type TradingJournal = {
+  id: string
+  name: string
+  startingBalance: number
+  status: 'active' | 'archived'
+}
+
 export type Metric = {
   label: string
   value: string
@@ -23,6 +30,13 @@ export const metrics: Metric[] = [
   { label: 'Account Balance', value: '$13,379.02', helper: '+33.79% on capital', icon: 'growth', tone: 'neutral' },
   { label: 'Win Rate', value: '66.0%', helper: '66W · 13BE · 21L', icon: 'rate', tone: 'neutral' },
   { label: 'Avg Duration', value: '1h 29m', helper: '100 trades total', icon: 'duration', tone: 'neutral' },
+]
+
+export const tradingJournals: TradingJournal[] = [
+  { id: 'journal-demo-q1', name: 'Demo Journal - Q1 2025', startingBalance: 10000, status: 'active' },
+  { id: 'journal-backtesting', name: 'BackTesting Journal', startingBalance: 25000, status: 'active' },
+  { id: 'journal-indices', name: 'Indices Journal', startingBalance: 15000, status: 'active' },
+  { id: 'journal-forex', name: 'Forex Journal', startingBalance: 5000, status: 'archived' },
 ]
 
 export const trades: Trade[] = [

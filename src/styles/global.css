@@ -417,6 +417,137 @@ table {
   font-weight: 650;
 }
 
+.journal-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.journal-card {
+  display: grid;
+  gap: 22px;
+  padding: 20px;
+}
+
+.journal-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.journal-card h2 {
+  color: var(--foreground);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.journal-card p {
+  margin-top: 5px;
+  color: var(--muted-foreground);
+  font-size: 13px;
+}
+
+.journal-balance {
+  color: var(--foreground) !important;
+  font-size: 24px !important;
+  font-weight: 650;
+  line-height: 1;
+}
+
+.journal-card-actions {
+  display: flex;
+  gap: 6px;
+  border-top: 1px solid var(--card-border);
+  padding-top: 14px;
+}
+
+.journal-card-actions button {
+  display: inline-grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  color: var(--muted-foreground);
+  background: var(--card);
+}
+
+.journal-card-actions button:hover {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  background: rgb(0 0 0 / 38%);
+  padding: 18px;
+}
+
+.modal-card {
+  width: min(100%, 460px);
+}
+
+.journal-form {
+  display: grid;
+  gap: 16px;
+}
+
+.journal-form label {
+  display: grid;
+  gap: 8px;
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.journal-form input {
+  min-height: 38px;
+  width: 100%;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  color: var(--foreground);
+  background: var(--card);
+  padding: 0 11px;
+  outline: none;
+}
+
+.journal-form input:focus {
+  border-color: var(--foreground);
+}
+
+.journal-form input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.journal-form small {
+  color: var(--danger);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.confirm-copy {
+  color: var(--muted-foreground);
+  font-size: 14px;
+}
+
+.confirm-copy strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
 .table-card {
   overflow: hidden;
 }
@@ -540,6 +671,11 @@ tr:last-child td {
   background: var(--primary);
 }
 
+.button-danger {
+  color: #ffffff;
+  background: var(--danger);
+}
+
 .button-secondary {
   border-color: var(--card-border);
   color: var(--muted-foreground);
@@ -569,6 +705,10 @@ tr:last-child td {
 @media (max-width: 1320px) {
   .metrics-grid {
     grid-template-columns: repeat(2, minmax(180px, 1fr));
+  }
+
+  .journal-card-grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
   }
 }
 
@@ -601,6 +741,7 @@ tr:last-child td {
   }
 
   .metrics-grid,
+  .journal-card-grid,
   .journal-summary,
   .settings-grid {
     grid-template-columns: 1fr;

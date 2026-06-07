@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.0.0...trading-journal-v1.1.0) (2026-06-07)
+
+
+### Features
+
+* ([#2](https://github.com/jboodhun/trading-journal/issues/2)): add node express basic api server ([a2218a2](https://github.com/jboodhun/trading-journal/commit/a2218a2381d970957782a1931d4d3a8a92dde810))
+* ([#2](https://github.com/jboodhun/trading-journal/issues/2)): add node express basic api server ([#15](https://github.com/jboodhun/trading-journal/issues/15)) ([bbcd07c](https://github.com/jboodhun/trading-journal/commit/bbcd07c8ce6401dbfe898964521c4f0a6d230eb9))
+
 ## 1.0.0 (2026-06-07)
 
 

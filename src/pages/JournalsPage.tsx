@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import type { FormEvent } from 'react'
 
-import { tradingJournals } from 'data/journal'
 import type { TradingJournal } from 'data/journal'
-import { ArchiveIcon, EditIcon, TrashIcon } from 'components/icons'
+import { getStoredJournals, storeJournals } from 'services/journalStorage'
+import { EmptySection } from 'components/empty-section'
+import { ArchiveIcon, BookIcon, EditIcon, TrashIcon } from 'components/icons'
 import { Badge, Button, Card } from 'components/ui'
 
 type JournalFormValues = {
@@ -186,6 +187,42 @@ function DeleteJournalModal({
   )
 }
 
+function JournalOnboardingEmpty({ onCreate }: { onCreate: () => void }) {
+  return (
+    <EmptySection.Root>
+      <EmptySection.Icon>
+        <BookIcon />
+      </EmptySection.Icon>
+      <EmptySection.Header>
+        <EmptySection.Title>Create your first trading journal</EmptySection.Title>
+        <EmptySection.Description>
+          Journals keep your trades, starting balance, and review workflow organized by account, market, strategy, or
+          backtesting plan.
+        </EmptySection.Description>
+      </EmptySection.Header>
+      <EmptySection.Actions>
+        <Button className="empty-section-cta" onClick={onCreate}>
+          Create Journal
+        </Button>
+      </EmptySection.Actions>
+      <EmptySection.Suggestions>
+        <EmptySection.Suggestion>
+          <strong>Demo Journal</strong>
+          <span>Track practice trades before risking live capital.</span>
+        </EmptySection.Suggestion>
+        <EmptySection.Suggestion>
+          <strong>BackTesting Journal</strong>
+          <span>Separate strategy testing from live execution.</span>
+        </EmptySection.Suggestion>
+        <EmptySection.Suggestion>
+          <strong>Broker Journal</strong>
+          <span>Keep each funded or broker account cleanly organized.</span>
+        </EmptySection.Suggestion>
+      </EmptySection.Suggestions>
+    </EmptySection.Root>
+  )
+}
+
 function JournalCard({
   journal,
   onArchive,
@@ -229,12 +266,20 @@ function JournalCard({
 }
 
 export function JournalsPage() {
-  const [journals, setJournals] = useState<TradingJournal[]>(tradingJournals)
+  const [journals, setJournals] = useState<TradingJournal[]>(getStoredJournals)
   const [dialog, setDialog] = useState<JournalDialog>(null)
-  const activeCount = useMemo(() => journals.filter((journal) => journal.status === 'active').length, [journals])
+
+  function updateJournals(updater: (current: TradingJournal[]) => TradingJournal[]) {
+    setJournals((current) => {
+      const nextJournals = updater(current)
+      storeJournals(nextJournals)
+
+      return nextJournals
+    })
+  }
 
   function handleArchive(journalId: string) {
-    setJournals((current) =>
+    updateJournals((current) =>
       current.map((journal) =>
         journal.id === journalId
           ? { ...journal, status: journal.status === 'active' ? 'archived' : 'active' }
@@ -253,40 +298,31 @@ export function JournalsPage() {
         <Button onClick={() => setDialog({ type: 'create' })}>+ Add Journal</Button>
       </header>
 
-      <section className="journal-summary">
-        <Card.Root>
-          <p className="summary-label">Total Journals</p>
-          <strong>{journals.length}</strong>
-        </Card.Root>
-        <Card.Root>
-          <p className="summary-label">Active</p>
-          <strong>{activeCount}</strong>
-        </Card.Root>
-        <Card.Root>
-          <p className="summary-label">Archived</p>
-          <strong>{journals.length - activeCount}</strong>
-        </Card.Root>
-      </section>
-
-      <section className="journal-card-grid" aria-label="Trading journals">
-        {journals.map((journal) => (
-          <JournalCard
-            journal={journal}
-            key={journal.id}
-            onArchive={handleArchive}
-            onDelete={(nextJournal) => setDialog({ type: 'delete', journal: nextJournal })}
-            onEdit={(nextJournal) => setDialog({ type: 'edit', journal: nextJournal })}
-          />
-        ))}
-      </section>
+      {journals.length === 0 ? (
+        <JournalOnboardingEmpty onCreate={() => setDialog({ type: 'create' })} />
+      ) : (
+        <section className="journal-card-grid" aria-label="Trading journals">
+          {journals.map((journal) => (
+            <JournalCard
+              journal={journal}
+              key={journal.id}
+              onArchive={handleArchive}
+              onDelete={(nextJournal) => setDialog({ type: 'delete', journal: nextJournal })}
+              onEdit={(nextJournal) => setDialog({ type: 'edit', journal: nextJournal })}
+            />
+          ))}
+        </section>
+      )}
 
       {dialog?.type === 'create' || dialog?.type === 'edit' ? (
         <JournalFormModal
           dialog={dialog}
           onClose={() => setDialog(null)}
-          onCreate={(journal) => setJournals((current) => [journal, ...current])}
+          onCreate={(journal) => updateJournals((current) => [journal, ...current])}
           onUpdate={(journal) =>
-            setJournals((current) => current.map((currentJournal) => (currentJournal.id === journal.id ? journal : currentJournal)))
+            updateJournals((current) =>
+              current.map((currentJournal) => (currentJournal.id === journal.id ? journal : currentJournal)),
+            )
           }
         />
       ) : null}
@@ -295,7 +331,7 @@ export function JournalsPage() {
         <DeleteJournalModal
           journal={dialog.journal}
           onClose={() => setDialog(null)}
-          onConfirm={(journalId) => setJournals((current) => current.filter((journal) => journal.id !== journalId))}
+          onConfirm={(journalId) => updateJournals((current) => current.filter((journal) => journal.id !== journalId))}
         />
       ) : null}
     </div>

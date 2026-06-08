@@ -1,7 +1,7 @@
 ---
 name: Ticket Template
 about: 'Ticket Template '
-title: "[BUG]: "
+title: ""
 labels: ''
 assignees: jboodhun
 

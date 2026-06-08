@@ -1,6 +1,10 @@
+import { useNavigate } from 'react-router-dom'
+
 import { metrics } from 'data/journal'
+import { getStoredJournals } from 'services/journalStorage'
+import { EmptySection } from 'components/empty-section'
 import { BookIcon, ClockIcon, WalletIcon } from 'components/icons'
-import { Card } from 'components/ui'
+import { Button, Card } from 'components/ui'
 
 const metricIcons = {
   wallet: <WalletIcon />,
@@ -31,6 +35,9 @@ function MetricCard({ icon, label, value, helper, tone = 'neutral' }: (typeof me
 }
 
 export function DashboardPage() {
+  const navigate = useNavigate()
+  const hasJournals = getStoredJournals().length > 0
+
   return (
     <div className="page-stack">
       <header className="page-header">
@@ -38,16 +45,49 @@ export function DashboardPage() {
           <BookIcon />
         </div>
         <div>
-          <h1>Demo Journal - Q1 2025</h1>
-          <p>Performance analytics and trade statistics</p>
+          <h1>Dashboard</h1>
         </div>
       </header>
 
-      <section className="metrics-grid" aria-label="Trading performance metrics">
-        {metrics.map((metric) => (
-          <MetricCard key={metric.label} {...metric} />
-        ))}
-      </section>
+      {hasJournals ? (
+        <section className="metrics-grid" aria-label="Trading performance metrics">
+          {metrics.map((metric) => (
+            <MetricCard key={metric.label} {...metric} />
+          ))}
+        </section>
+      ) : (
+        <EmptySection.Root>
+          <EmptySection.Icon>
+            <BookIcon />
+          </EmptySection.Icon>
+          <EmptySection.Header>
+            <EmptySection.Title>Create a journal to unlock your dashboard</EmptySection.Title>
+            <EmptySection.Description>
+              Dashboard analytics start from journal data. Create your first journal to establish a starting balance,
+              organize trading activity, and prepare the workspace for trade tracking.
+            </EmptySection.Description>
+          </EmptySection.Header>
+          <EmptySection.Actions>
+            <Button className="empty-section-cta" onClick={() => navigate('/journals')}>
+              Create Journal
+            </Button>
+          </EmptySection.Actions>
+          <EmptySection.Suggestions>
+            <EmptySection.Suggestion>
+              <strong>Demo Journal</strong>
+              <span>Track practice trades before risking live capital.</span>
+            </EmptySection.Suggestion>
+            <EmptySection.Suggestion>
+              <strong>BackTesting Journal</strong>
+              <span>Separate strategy testing from live execution.</span>
+            </EmptySection.Suggestion>
+            <EmptySection.Suggestion>
+              <strong>Broker Journal</strong>
+              <span>Keep each funded or broker account cleanly organized.</span>
+            </EmptySection.Suggestion>
+          </EmptySection.Suggestions>
+        </EmptySection.Root>
+      )}
     </div>
   )
 }

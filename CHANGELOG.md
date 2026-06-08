@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.1.0...trading-journal-v1.2.0) (2026-06-08)
+
+
+### Features
+
+* add guided first journal onboarding ([9cc4d67](https://github.com/jboodhun/trading-journal/commit/9cc4d67cd53f6490044736bcfcfc7b4b45f0fd0f))
+* add guided first journal onboarding ([#20](https://github.com/jboodhun/trading-journal/issues/20)) ([6bcf3db](https://github.com/jboodhun/trading-journal/commit/6bcf3db107fb225dc31a14a2bec8d328dd23da77))
+
 ## [1.1.0](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.0.0...trading-journal-v1.1.0) (2026-06-07)
 
 

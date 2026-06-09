@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.4.0...trading-journal-v1.4.1) (2026-06-09)
+
+
+### Bug Fixes
+
+* reduce rounded corner size ([4d1bd08](https://github.com/jboodhun/trading-journal/commit/4d1bd0811374096b1a621052b94e1a015c711910))
+
 ## [1.4.0](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.3.0...trading-journal-v1.4.0) (2026-06-09)
 
 

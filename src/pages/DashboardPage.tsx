@@ -1,9 +1,11 @@
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 import { metrics } from 'data/journal'
-import { getStoredJournals } from 'services/journalStorage'
+import type { TradingJournal } from 'data/journal'
+import { getStoredJournals, storeJournals } from 'services/journalStorage'
 import { EmptySection } from 'components/empty-section'
 import { BookIcon, ClockIcon, WalletIcon } from 'components/icons'
+import { JournalFormModal } from 'components/journals'
 import { Button, Card } from 'components/ui'
 
 const metricIcons = {
@@ -35,8 +37,18 @@ function MetricCard({ icon, label, value, helper, tone = 'neutral' }: (typeof me
 }
 
 export function DashboardPage() {
-  const navigate = useNavigate()
-  const hasJournals = getStoredJournals().length > 0
+  const [journals, setJournals] = useState<TradingJournal[]>(getStoredJournals)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const hasJournals = journals.length > 0
+
+  function handleCreateJournal(journal: TradingJournal) {
+    setJournals((current) => {
+      const nextJournals = [journal, ...current]
+      storeJournals(nextJournals)
+
+      return nextJournals
+    })
+  }
 
   return (
     <div className="page-stack">
@@ -68,7 +80,7 @@ export function DashboardPage() {
             </EmptySection.Description>
           </EmptySection.Header>
           <EmptySection.Actions>
-            <Button className="empty-section-cta" onClick={() => navigate('/journals')}>
+            <Button className="empty-section-cta" onClick={() => setIsCreateModalOpen(true)}>
               Create Journal
             </Button>
           </EmptySection.Actions>
@@ -88,6 +100,13 @@ export function DashboardPage() {
           </EmptySection.Suggestions>
         </EmptySection.Root>
       )}
+
+      {isCreateModalOpen ? (
+        <JournalFormModal
+          onClose={() => setIsCreateModalOpen(false)}
+          onCreate={handleCreateJournal}
+        />
+      ) : null}
     </div>
   )
 }

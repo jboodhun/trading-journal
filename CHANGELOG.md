@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.4.1...trading-journal-v1.4.2) (2026-06-09)
+
+
+### Bug Fixes
+
+* [#22](https://github.com/jboodhun/trading-journal/issues/22) allow users to create journal from Dashboard Create Journal … ([#29](https://github.com/jboodhun/trading-journal/issues/29)) ([173a1ca](https://github.com/jboodhun/trading-journal/commit/173a1ca83e6a8d244c719afe5973322c88cc75f3))
+
 ## [1.4.1](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.4.0...trading-journal-v1.4.1) (2026-06-09)
 
 

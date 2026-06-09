@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.3.0...trading-journal-v1.4.0) (2026-06-09)
+
+
+### Features
+
+* improved theme v3 ([#26](https://github.com/jboodhun/trading-journal/issues/26)) ([dafdc21](https://github.com/jboodhun/trading-journal/commit/dafdc215128e49235aab2c594a982d81ed49fe14))
+
 ## [1.3.0](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.2.0...trading-journal-v1.3.0) (2026-06-08)
 
 

@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { metrics } from 'data/journal'
 import type { TradingJournal } from 'data/journal'
-import { getStoredJournals, storeJournals } from 'services/journalStorage'
+import * as journalApi from 'services/journalApi'
 import { EmptySection } from 'components/empty-section'
 import { BookIcon, ClockIcon, WalletIcon } from 'components/icons'
 import { JournalFormModal } from 'components/journals'
@@ -37,17 +37,32 @@ function MetricCard({ icon, label, value, helper, tone = 'neutral' }: (typeof me
 }
 
 export function DashboardPage() {
-  const [journals, setJournals] = useState<TradingJournal[]>(getStoredJournals)
+  const [journals, setJournals] = useState<TradingJournal[]>([])
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState('')
   const hasJournals = journals.length > 0
 
-  function handleCreateJournal(journal: TradingJournal) {
-    setJournals((current) => {
-      const nextJournals = [journal, ...current]
-      storeJournals(nextJournals)
+  async function loadJournals() {
+    try {
+      setIsLoading(true)
+      setError('')
+      setJournals(await journalApi.getJournals())
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : 'Unable to load journals.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
-      return nextJournals
-    })
+  useEffect(() => {
+    void loadJournals()
+  }, [])
+
+  async function handleCreateJournal(journal: journalApi.JournalPayload) {
+    const nextJournal = await journalApi.createJournal(journal)
+
+    setJournals((current) => [nextJournal, ...current])
   }
 
   return (
@@ -61,7 +76,23 @@ export function DashboardPage() {
         </div>
       </header>
 
-      {hasJournals ? (
+      {isLoading ? (
+        <Card.Root className="state-card">
+          <Card.Content>
+            <p>Loading dashboard...</p>
+          </Card.Content>
+        </Card.Root>
+      ) : error ? (
+        <Card.Root className="state-card state-card-error">
+          <Card.Content>
+            <h2>Unable to load dashboard</h2>
+            <p>{error}</p>
+            <Button onClick={() => void loadJournals()} variant="secondary">
+              Retry
+            </Button>
+          </Card.Content>
+        </Card.Root>
+      ) : hasJournals ? (
         <section className="metrics-grid" aria-label="Trading performance metrics">
           {metrics.map((metric) => (
             <MetricCard key={metric.label} {...metric} />

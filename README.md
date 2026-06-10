@@ -49,8 +49,8 @@ The App starts with a clean onboarding flow and journal structure, then grows in
 1. Clone the repository
 2. Navigate into the project folder
 3. Run `npm install`
-4. Run `npm start`
-
+4. Run `npm run db:init`
+5. Run `npm start`
 
 
 

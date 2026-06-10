@@ -676,6 +676,30 @@ table {
   font-weight: 600;
 }
 
+.state-card {
+  max-width: 680px;
+}
+
+.state-card h2 {
+  margin-bottom: 6px;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.state-card p {
+  margin-bottom: 16px;
+  color: var(--muted-foreground);
+}
+
+.state-card-error {
+  border-color: color-mix(in srgb, var(--destructive) 42%, var(--card-border));
+}
+
+.form-error {
+  color: var(--destructive);
+  font-size: 13px;
+}
+
 .table-card {
   overflow: hidden;
 }

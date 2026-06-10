@@ -10,12 +10,17 @@ type JournalFormValues = {
 }
 
 type FormErrors = Partial<Record<keyof JournalFormValues, string>>
+type JournalFormSubmission = {
+  name: string
+  startingBalance: number
+  status: TradingJournal['status']
+}
 
 type JournalFormModalProps = {
   journal?: TradingJournal
   onClose: () => void
-  onCreate: (journal: TradingJournal) => void
-  onUpdate?: (journal: TradingJournal) => void
+  onCreate: (journal: JournalFormSubmission) => Promise<void> | void
+  onUpdate?: (journal: JournalFormSubmission) => Promise<void> | void
 }
 
 function getInitialFormValues(journal?: TradingJournal): JournalFormValues {
@@ -42,45 +47,45 @@ function validateJournalForm(values: JournalFormValues) {
   return errors
 }
 
-function createJournalId(name: string) {
-  const slug = name
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
-
-  return `journal-${slug || 'untitled'}-${Date.now()}`
-}
-
 export function JournalFormModal({ journal, onClose, onCreate, onUpdate }: JournalFormModalProps) {
   const isEditing = Boolean(journal)
   const [values, setValues] = useState<JournalFormValues>(getInitialFormValues(journal))
   const [errors, setErrors] = useState<FormErrors>({})
+  const [submitError, setSubmitError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     const nextErrors = validateJournalForm(values)
     setErrors(nextErrors)
+    setSubmitError('')
 
     if (Object.keys(nextErrors).length > 0) {
       return
     }
 
-    const nextJournal: TradingJournal = {
-      id: journal?.id ?? createJournalId(values.name),
+    const nextJournal: JournalFormSubmission = {
       name: values.name.trim(),
       startingBalance: Number(values.startingBalance),
       status: journal?.status ?? 'active',
     }
 
-    if (journal) {
-      onUpdate?.(nextJournal)
-    } else {
-      onCreate(nextJournal)
-    }
+    try {
+      setIsSubmitting(true)
 
-    onClose()
+      if (journal) {
+        await onUpdate?.(nextJournal)
+      } else {
+        await onCreate(nextJournal)
+      }
+
+      onClose()
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Unable to save journal. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -115,11 +120,15 @@ export function JournalFormModal({ journal, onClose, onCreate, onUpdate }: Journ
               {errors.startingBalance ? <small>{errors.startingBalance}</small> : null}
             </label>
 
+            {submitError ? <p className="form-error">{submitError}</p> : null}
+
             <div className="modal-actions">
-              <Button onClick={onClose} variant="secondary">
+              <Button disabled={isSubmitting} onClick={onClose} variant="secondary">
                 Cancel
               </Button>
-              <Button type="submit">{isEditing ? 'Save Journal' : 'Add Journal'}</Button>
+              <Button disabled={isSubmitting} type="submit">
+                {isSubmitting ? 'Saving...' : isEditing ? 'Save Journal' : 'Add Journal'}
+              </Button>
             </div>
           </form>
         </Card.Content>

@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import type { TradingJournal } from 'data/journal'
-import { getStoredJournals, storeJournals } from 'services/journalStorage'
+import * as journalApi from 'services/journalApi'
 import { EmptySection } from 'components/empty-section'
 import { ArchiveIcon, BookIcon, EditIcon, TrashIcon } from 'components/icons'
 import { JournalFormModal } from 'components/journals'
@@ -34,7 +34,7 @@ function DeleteJournalModal({
       <Card.Root className="modal-card">
         <Card.Header>
           <h2>Delete Journal</h2>
-          <p>This removes the journal from the current client session.</p>
+          <p>This removes the journal from your saved journals.</p>
         </Card.Header>
         <Card.Content>
           <p className="confirm-copy">
@@ -139,26 +139,56 @@ function JournalCard({
 }
 
 export function JournalsPage() {
-  const [journals, setJournals] = useState<TradingJournal[]>(getStoredJournals)
+  const [journals, setJournals] = useState<TradingJournal[]>([])
   const [dialog, setDialog] = useState<JournalDialog>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState('')
 
-  function updateJournals(updater: (current: TradingJournal[]) => TradingJournal[]) {
-    setJournals((current) => {
-      const nextJournals = updater(current)
-      storeJournals(nextJournals)
-
-      return nextJournals
-    })
+  async function loadJournals() {
+    try {
+      setIsLoading(true)
+      setError('')
+      setJournals(await journalApi.getJournals())
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : 'Unable to load journals.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  function handleArchive(journalId: string) {
-    updateJournals((current) =>
-      current.map((journal) =>
-        journal.id === journalId
-          ? { ...journal, status: journal.status === 'active' ? 'archived' : 'active' }
-          : journal,
-      ),
+  useEffect(() => {
+    void loadJournals()
+  }, [])
+
+  async function handleCreateJournal(journal: journalApi.JournalPayload) {
+    const nextJournal = await journalApi.createJournal(journal)
+
+    setJournals((current) => [nextJournal, ...current])
+  }
+
+  async function handleUpdateJournal(journalId: string, journal: journalApi.JournalPayload) {
+    const nextJournal = await journalApi.updateJournal(journalId, journal)
+
+    setJournals((current) =>
+      current.map((currentJournal) => (currentJournal.id === nextJournal.id ? nextJournal : currentJournal)),
     )
+  }
+
+  async function handleArchive(journalId: string) {
+    const journal = journals.find((currentJournal) => currentJournal.id === journalId)
+
+    if (!journal) {
+      return
+    }
+
+    const status = journal.status === 'active' ? 'archived' : 'active'
+
+    await handleUpdateJournal(journalId, { ...journal, status })
+  }
+
+  async function handleDeleteJournal(journalId: string) {
+    await journalApi.deleteJournal(journalId)
+    setJournals((current) => current.filter((journal) => journal.id !== journalId))
   }
 
   return (
@@ -171,7 +201,23 @@ export function JournalsPage() {
         <Button onClick={() => setDialog({ type: 'create' })}>+ Add Journal</Button>
       </header>
 
-      {journals.length === 0 ? (
+      {isLoading ? (
+        <Card.Root className="state-card">
+          <Card.Content>
+            <p>Loading journals...</p>
+          </Card.Content>
+        </Card.Root>
+      ) : error ? (
+        <Card.Root className="state-card state-card-error">
+          <Card.Content>
+            <h2>Unable to load journals</h2>
+            <p>{error}</p>
+            <Button onClick={() => void loadJournals()} variant="secondary">
+              Retry
+            </Button>
+          </Card.Content>
+        </Card.Root>
+      ) : journals.length === 0 ? (
         <JournalOnboardingEmpty onCreate={() => setDialog({ type: 'create' })} />
       ) : (
         <section className="journal-card-grid" aria-label="Trading journals">
@@ -191,11 +237,9 @@ export function JournalsPage() {
         <JournalFormModal
           journal={dialog.type === 'edit' ? dialog.journal : undefined}
           onClose={() => setDialog(null)}
-          onCreate={(journal) => updateJournals((current) => [journal, ...current])}
+          onCreate={handleCreateJournal}
           onUpdate={(journal) =>
-            updateJournals((current) =>
-              current.map((currentJournal) => (currentJournal.id === journal.id ? journal : currentJournal)),
-            )
+            dialog.type === 'edit' ? handleUpdateJournal(dialog.journal.id, journal) : Promise.resolve()
           }
         />
       ) : null}
@@ -204,7 +248,7 @@ export function JournalsPage() {
         <DeleteJournalModal
           journal={dialog.journal}
           onClose={() => setDialog(null)}
-          onConfirm={(journalId) => updateJournals((current) => current.filter((journal) => journal.id !== journalId))}
+          onConfirm={(journalId) => void handleDeleteJournal(journalId)}
         />
       ) : null}
     </div>

@@ -15,6 +15,8 @@ export type TradingJournal = {
   name: string
   startingBalance: number
   status: 'active' | 'archived'
+  createdAt?: string
+  updatedAt?: string
 }
 
 export type Metric = {

@@ -1,16 +1,19 @@
 import express from 'express'
 import type { Express } from 'express'
 
-const journals = [
-  { id: 'journal-demo-q1', name: 'Demo Journal - Q1 2025', startingBalance: 10000, status: 'active' },
-  { id: 'journal-backtesting', name: 'BackTesting Journal', startingBalance: 25000, status: 'active' },
-  { id: 'journal-indices', name: 'Indices Journal', startingBalance: 15000, status: 'active' },
-  { id: 'journal-forex', name: 'Forex Journal', startingBalance: 5000, status: 'archived' },
-]
+import { initializeDatabase } from './db/database'
+import {
+  createJournal,
+  deleteJournal,
+  JournalValidationError,
+  listJournals,
+  updateJournal,
+} from './journals/journalService'
 
 export function createApp(): Express {
   const app = express()
 
+  initializeDatabase()
   app.use(express.json())
 
   app.get('/api/health', (_request, response) => {
@@ -21,7 +24,51 @@ export function createApp(): Express {
   })
 
   app.get('/api/journals', (_request, response) => {
-    response.json({ journals })
+    response.json({ journals: listJournals() })
+  })
+
+  app.post('/api/journals', (request, response) => {
+    try {
+      const journal = createJournal(request.body)
+
+      response.status(201).json({ journal })
+    } catch (error) {
+      if (error instanceof JournalValidationError) {
+        response.status(400).json({ error: error.message })
+        return
+      }
+
+      throw error
+    }
+  })
+
+  app.put('/api/journals/:id', (request, response) => {
+    try {
+      const journal = updateJournal(request.params.id, request.body)
+
+      if (!journal) {
+        response.status(404).json({ error: 'Journal not found.' })
+        return
+      }
+
+      response.json({ journal })
+    } catch (error) {
+      if (error instanceof JournalValidationError) {
+        response.status(400).json({ error: error.message })
+        return
+      }
+
+      throw error
+    }
+  })
+
+  app.delete('/api/journals/:id', (request, response) => {
+    if (!deleteJournal(request.params.id)) {
+      response.status(404).json({ error: 'Journal not found.' })
+      return
+    }
+
+    response.status(204).send()
   })
 
   return app

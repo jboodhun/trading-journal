@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.4.2...trading-journal-v1.5.0) (2026-06-10)
+
+
+### Features
+
+* [#3](https://github.com/jboodhun/trading-journal/issues/3) add sqlite database ([#33](https://github.com/jboodhun/trading-journal/issues/33)) ([f1a5456](https://github.com/jboodhun/trading-journal/commit/f1a5456b39b1ff62bf7d4ddf7a9d68a7f990e249))
+
 ## [1.4.2](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.4.1...trading-journal-v1.4.2) (2026-06-09)
 
 

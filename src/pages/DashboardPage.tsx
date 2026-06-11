@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { metrics } from 'data/journal'
 import type { TradingJournal } from 'data/journal'
 import * as journalApi from 'services/journalApi'
+import { Breadcrumb } from 'components/common'
 import { EmptySection } from 'components/empty-section'
 import { BookIcon, ClockIcon, WalletIcon } from 'components/icons'
 import { JournalFormModal } from 'components/journals'
@@ -67,12 +68,11 @@ export function DashboardPage() {
 
   return (
     <div className="page-stack">
+      <Breadcrumb items={[{ label: 'Dashboard', active: true }]} />
       <header className="page-header">
-        <div className="page-title-icon">
-          <BookIcon />
-        </div>
         <div>
           <h1>Dashboard</h1>
+          <p>Track journal performance and trading activity.</p>
         </div>
       </header>
 

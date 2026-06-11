@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 
 import type { TradingJournal } from 'data/journal'
 import * as journalApi from 'services/journalApi'
+import { Breadcrumb } from 'components/common'
 import { EmptySection } from 'components/empty-section'
-import { ArchiveIcon, BookIcon, EditIcon, TrashIcon } from 'components/icons'
+import { ArchiveIcon, BookIcon, EditIcon, PlusIcon, TrashIcon } from 'components/icons'
 import { JournalFormModal } from 'components/journals'
 import { Badge, Button, Card } from 'components/ui'
 
@@ -193,12 +194,16 @@ export function JournalsPage() {
 
   return (
     <div className="page-stack">
+      <Breadcrumb items={[{ label: 'Journals', active: true }]} />
       <header className="section-header">
         <div>
           <h1>Journals</h1>
           <p>Create, edit, archive, and manage trading journals.</p>
         </div>
-        <Button onClick={() => setDialog({ type: 'create' })}>+ Add Journal</Button>
+        <Button onClick={() => setDialog({ type: 'create' })}>
+          <PlusIcon />
+          Add Journal
+        </Button>
       </header>
 
       {isLoading ? (

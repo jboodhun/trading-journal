@@ -1,97 +1,81 @@
-import { createContext, useContext } from 'react'
 import type { ReactNode } from 'react'
 
 import type { ThemeMode } from 'app/App'
-import { Button, Card } from 'components/ui'
+import { Breadcrumb } from 'components/common'
+import { FolderIcon, SettingsIcon, ShieldCheckIcon, SunIcon, UsersIcon } from 'components/icons'
 
-type SettingsContextValue = {
+type SettingsPageProps = {
   theme: ThemeMode
   onThemeChange: (theme: ThemeMode) => void
 }
 
-const SettingsContext = createContext<SettingsContextValue | null>(null)
-
-function useSettings() {
-  const context = useContext(SettingsContext)
-
-  if (!context) {
-    throw new Error('Settings components must be rendered inside Settings.Provider')
-  }
-
-  return context
+type SettingsSection = {
+  title: string
+  description: string
+  icon: ReactNode
+  disabled?: boolean
+  onClick?: () => void
 }
 
-function Provider({ children, theme, onThemeChange }: SettingsContextValue & { children: ReactNode }) {
-  return <SettingsContext value={{ theme, onThemeChange }}>{children}</SettingsContext>
-}
-
-function ThemePanel() {
-  const { theme, onThemeChange } = useSettings()
+export function SettingsPage({ theme, onThemeChange }: SettingsPageProps) {
+  const settingsSections: SettingsSection[] = [
+    {
+      title: 'Appearance',
+      description: `Workspace theme is currently set to ${theme}. Toggle between light and dark review modes.`,
+      icon: <SunIcon />,
+      onClick: () => onThemeChange(theme === 'dark' ? 'light' : 'dark'),
+    },
+    {
+      title: 'Journal Defaults',
+      description: 'Configure default currency, risk per trade, review cadence, and journal preferences.',
+      icon: <FolderIcon />,
+      disabled: true,
+    },
+    {
+      title: 'Account Settings',
+      description: 'Manage profile details, account preferences, and future authentication settings.',
+      icon: <UsersIcon />,
+      disabled: true,
+    },
+    {
+      title: 'Data & Storage',
+      description: 'Review SQLite storage, export options, and future backup preferences.',
+      icon: <SettingsIcon />,
+      disabled: true,
+    },
+    {
+      title: 'Risk Policies',
+      description: 'Define position sizing rules, max daily loss limits, and journaling guardrails.',
+      icon: <ShieldCheckIcon />,
+      disabled: true,
+    },
+  ]
 
   return (
-    <Card.Root className="settings-panel">
-      <Card.Header>
-        <h2>Appearance</h2>
-        <p>Choose the workspace theme for trading reviews.</p>
-      </Card.Header>
-      <Card.Content className="settings-actions">
-        <Button variant={theme === 'light' ? 'primary' : 'secondary'} onClick={() => onThemeChange('light')}>
-          Light
-        </Button>
-        <Button variant={theme === 'dark' ? 'primary' : 'secondary'} onClick={() => onThemeChange('dark')}>
-          Dark
-        </Button>
-      </Card.Content>
-    </Card.Root>
-  )
-}
-
-function PreferencesPanel() {
-  return (
-    <Card.Root className="settings-panel">
-      <Card.Header>
-        <h2>Journal Defaults</h2>
-        <p>Static placeholders for future account, broker, and risk settings.</p>
-      </Card.Header>
-      <Card.Content className="settings-list">
-        <div>
-          <span>Base currency</span>
-          <strong>USD</strong>
-        </div>
-        <div>
-          <span>Default risk per trade</span>
-          <strong>1.0%</strong>
-        </div>
-        <div>
-          <span>Review cadence</span>
-          <strong>Weekly</strong>
-        </div>
-      </Card.Content>
-    </Card.Root>
-  )
-}
-
-export function SettingsPage({ theme, onThemeChange }: SettingsContextValue) {
-  return (
-    <Settings.Provider theme={theme} onThemeChange={onThemeChange}>
-      <div className="page-stack">
-        <header className="section-header">
-          <div>
-            <h1>Settings</h1>
-            <p>Basic workspace preferences for the static client.</p>
-          </div>
-        </header>
-        <div className="settings-grid">
-          <Settings.ThemePanel />
-          <Settings.PreferencesPanel />
+    <div className="admin-page">
+      <Breadcrumb items={[{ label: 'Administration', active: true }]} />
+      <div className="admin-page-header">
+        <div className="admin-heading">
+          <h1>Administration</h1>
+          <p>Manage workspace configuration and trading journal settings</p>
         </div>
       </div>
-    </Settings.Provider>
-  )
-}
 
-const Settings = {
-  Provider,
-  ThemePanel,
-  PreferencesPanel,
+      <div className="admin-card-grid">
+        {settingsSections.map((section) => (
+          <button
+            className={`admin-card ${section.disabled ? 'is-disabled' : ''}`}
+            disabled={section.disabled}
+            key={section.title}
+            onClick={section.onClick}
+            type="button"
+          >
+            <div className={`admin-card-icon ${section.disabled ? 'is-muted' : ''}`}>{section.icon}</div>
+            <h2>{section.title}</h2>
+            <p>{section.description}</p>
+          </button>
+        ))}
+      </div>
+    </div>
+  )
 }

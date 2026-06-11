@@ -616,7 +616,15 @@ table {
 
 .journal-card:hover {
   border-color: #c7d2fe;
-  box-shadow: 0 12px 24px -16px rgb(99 102 241 / 32%);
+}
+
+.journal-card-clickable {
+  cursor: pointer;
+}
+
+.journal-card-clickable:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ring) 70%, transparent);
+  outline-offset: 2px;
 }
 
 .journal-card-header {
@@ -764,8 +772,67 @@ table {
   font-size: 13px;
 }
 
+.journal-detail-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 260px));
+  gap: 16px;
+}
+
+.journal-detail-summary .card-content {
+  display: grid;
+  gap: 8px;
+  padding: 20px;
+}
+
+.journal-detail-summary span {
+  color: var(--muted-foreground);
+  font-size: 13px;
+}
+
+.journal-detail-summary strong {
+  color: var(--foreground);
+  font-size: 20px;
+  font-weight: 650;
+}
+
+.detail-action-header {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.trades-section {
+  display: grid;
+  gap: 16px;
+}
+
+.trades-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.trades-section-header h2 {
+  color: var(--foreground);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.trades-section-header p {
+  margin-top: 4px;
+  color: var(--muted-foreground);
+  font-size: 14px;
+}
+
 .table-card {
+  border-radius: var(--radius);
   overflow: hidden;
+}
+
+.table-card table {
+  overflow: hidden;
+  border-radius: inherit;
 }
 
 .table-scroll {
@@ -789,6 +856,11 @@ th {
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+th:first-child,
+th:last-child {
+  border-radius: 0;
 }
 
 td:first-child,
@@ -1132,6 +1204,7 @@ svg {
   .empty-section-suggestions,
   .journal-card-grid,
   .journal-summary,
+  .journal-detail-summary,
   .settings-grid,
   .admin-card-grid {
     grid-template-columns: 1fr;

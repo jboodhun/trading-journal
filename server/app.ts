@@ -5,6 +5,7 @@ import { initializeDatabase } from './db/database'
 import {
   createJournal,
   deleteJournal,
+  getJournalById,
   JournalValidationError,
   listJournals,
   updateJournal,
@@ -25,6 +26,17 @@ export function createApp(): Express {
 
   app.get('/api/journals', (_request, response) => {
     response.json({ journals: listJournals() })
+  })
+
+  app.get('/api/journals/:id', (request, response) => {
+    const journal = getJournalById(request.params.id)
+
+    if (!journal) {
+      response.status(404).json({ error: 'Journal not found.' })
+      return
+    }
+
+    response.json({ journal })
   })
 
   app.post('/api/journals', (request, response) => {

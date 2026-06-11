@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import type { TradingJournal } from 'data/journal'
 import * as journalApi from 'services/journalApi'
@@ -102,14 +103,27 @@ function JournalCard({
   onArchive,
   onDelete,
   onEdit,
+  onOpen,
 }: {
   journal: TradingJournal
   onArchive: (journalId: string) => void
   onDelete: (journal: TradingJournal) => void
   onEdit: (journal: TradingJournal) => void
+  onOpen: (journalId: string) => void
 }) {
   return (
-    <Card.Root className="journal-card">
+    <Card.Root
+      className="journal-card journal-card-clickable"
+      onClick={() => onOpen(journal.id)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          onOpen(journal.id)
+        }
+      }}
+      role="button"
+      tabIndex={0}
+    >
       <div className="journal-card-header">
         <div>
           <h2>{journal.name}</h2>
@@ -121,17 +135,34 @@ function JournalCard({
       <p className="journal-balance">{currencyFormatter.format(journal.startingBalance)}</p>
 
       <div className="journal-card-actions">
-        <button aria-label={`Edit ${journal.name}`} onClick={() => onEdit(journal)} type="button">
+        <button
+          aria-label={`Edit ${journal.name}`}
+          onClick={(event) => {
+            event.stopPropagation()
+            onEdit(journal)
+          }}
+          type="button"
+        >
           <EditIcon />
         </button>
         <button
           aria-label={`${journal.status === 'active' ? 'Archive' : 'Restore'} ${journal.name}`}
-          onClick={() => onArchive(journal.id)}
+          onClick={(event) => {
+            event.stopPropagation()
+            onArchive(journal.id)
+          }}
           type="button"
         >
           <ArchiveIcon />
         </button>
-        <button aria-label={`Delete ${journal.name}`} onClick={() => onDelete(journal)} type="button">
+        <button
+          aria-label={`Delete ${journal.name}`}
+          onClick={(event) => {
+            event.stopPropagation()
+            onDelete(journal)
+          }}
+          type="button"
+        >
           <TrashIcon />
         </button>
       </div>
@@ -140,6 +171,7 @@ function JournalCard({
 }
 
 export function JournalsPage() {
+  const navigate = useNavigate()
   const [journals, setJournals] = useState<TradingJournal[]>([])
   const [dialog, setDialog] = useState<JournalDialog>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -233,6 +265,7 @@ export function JournalsPage() {
               onArchive={handleArchive}
               onDelete={(nextJournal) => setDialog({ type: 'delete', journal: nextJournal })}
               onEdit={(nextJournal) => setDialog({ type: 'edit', journal: nextJournal })}
+              onOpen={(journalId) => navigate(`/journals/${journalId}`)}
             />
           ))}
         </section>

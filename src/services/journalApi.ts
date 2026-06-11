@@ -35,6 +35,23 @@ export async function getJournals() {
   return body.journals
 }
 
+export async function getJournal(journalId: string) {
+  const response = await fetch(`/api/journals/${journalId}`)
+
+  if (response.status === 404) {
+    const journals = await getJournals()
+    const journal = journals.find((currentJournal) => currentJournal.id === journalId)
+
+    if (journal) {
+      return journal
+    }
+  }
+
+  const body = await parseApiResponse<JournalResponse>(response)
+
+  return body.journal
+}
+
 export async function createJournal(payload: JournalPayload) {
   const response = await fetch('/api/journals', {
     body: JSON.stringify(payload),

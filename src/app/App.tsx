@@ -4,6 +4,7 @@ import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-
 import { AppShell } from 'layouts/AppShell'
 import { CalendarPage } from 'pages/CalendarPage'
 import { DashboardPage } from 'pages/DashboardPage'
+import { JournalDetailPage } from 'pages/JournalDetailPage'
 import { JournalsPage } from 'pages/JournalsPage'
 import { SettingsPage } from 'pages/SettingsPage'
 
@@ -58,6 +59,7 @@ export function App() {
             <Route element={<Navigate replace to="/dashboard" />} path="/" />
             <Route element={<DashboardPage />} path="/dashboard" />
             <Route element={<JournalsPage />} path="/journals" />
+            <Route element={<JournalDetailPage />} path="/journals/:journalId" />
             <Route element={<CalendarPage />} path="/calendar" />
             <Route element={<SettingsPage onThemeChange={setTheme} theme={theme} />} path="/settings" />
             <Route element={<Navigate replace to="/dashboard" />} path="*" />

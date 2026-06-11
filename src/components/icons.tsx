@@ -3,6 +3,7 @@ import {
   BookOpen,
   Calendar,
   ChartNoAxesCombined,
+  ChartNoAxesColumnIncreasing,
   ChevronLeft,
   Clock,
   ClipboardList,
@@ -29,6 +30,7 @@ export const ArchiveIcon = Archive
 export const BookIcon = BookOpen
 export const CalendarIcon = Calendar
 export const ChartIcon = ChartNoAxesCombined
+export const ChartUpIcon = ChartNoAxesColumnIncreasing
 export const ChevronLeftIcon = ChevronLeft
 export const ClockIcon = Clock
 export const ClipboardListIcon = ClipboardList

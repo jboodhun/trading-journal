@@ -3,7 +3,7 @@ import { createContext, use } from 'react'
 import type { ReactNode } from 'react'
 
 import type { AppView, ThemeMode } from 'app/App'
-import { CalendarIcon, ChartIcon, PackageSearchIcon, GridIcon, MoonIcon, SettingsIcon, SunIcon } from 'components/icons'
+import { CalendarIcon, ChartIcon, GridIcon, MoonIcon, SettingsIcon, SunIcon } from 'components/icons'
 
 type AppShellContextValue = {
   activeView: AppView
@@ -58,14 +58,13 @@ function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="brand">
-        <PackageSearchIcon className="brand-mark" />
+        <img alt="" className="brand-mark" src="/icon.svg" />
         <div>
-          <p className="brand-name">Trade Journal</p>
+          <p className="brand-name">Trading Journal</p>
         </div>
       </div>
 
       <nav className="nav-section" aria-label="Primary navigation">
-        <p className="nav-heading">Navigation</p>
         {navItems.map((item) => (
           <button
             className={`nav-item ${item.view === activeView ? 'is-active' : ''}`}

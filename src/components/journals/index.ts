@@ -1,1 +1,0 @@
-export { JournalFormModal } from './JournalFormModal'

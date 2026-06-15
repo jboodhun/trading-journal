@@ -27,30 +27,41 @@ The App starts with a clean onboarding flow and journal structure, then grows in
 
 ## Stack
 
-- React 19
-- Node
-- Express
-- Typescript
-- Vite
-- ShadCN
-- Tailwind CSS
+React 19 · TypeScript · Vite · Redux Toolkit (RTK Query) · Tailwind CSS 4 · Base UI · Recharts · Express 5 · SQLite (`node:sqlite`)
+
+Structured as an npm-workspaces monorepo (`client/` + `server/`).
 
 ## 🚀 Features
 
-- Record trades manually
-- Filter entries
+- Create, edit, archive, and delete trading journals (persisted in SQLite)
+- Light / dark theme
+
+Trade logging, analytics, and the P&L calendar are built incrementally as tickets — those pages currently show empty-state shells.
 
 ## 🧰 Requirements
 
-- Node 20+
+- Node 22+ (the server uses the built-in `node:sqlite`, no native build step)
 
 ## ⚙️ Installation and Setup
 
 1. Clone the repository
 2. Navigate into the project folder
 3. Run `npm install`
-4. Run `npm run db:init`
-5. Run `npm start`
+4. Run `npm run dev`
+
+That one command starts everything:
+
+- **API server** (Express 5 + SQLite) on `http://localhost:3017` — the database is created automatically at `server/data/journal.db`.
+- **Client** (Vite + React 19) on `http://localhost:5188` — `/api` is proxied to the server.
+
+## Other commands
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start server + client together |
+| `npm run typecheck` | Typecheck both workspaces |
+| `npm run build` | Production build of the client |
+| `npm run lint` | Lint the repo |
 
 
 

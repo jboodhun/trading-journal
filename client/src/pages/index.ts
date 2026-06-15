@@ -1,0 +1,5 @@
+export { DashboardPage } from './DashboardPage'
+export { TradesPage } from './TradesPage'
+export { CalendarPage } from './CalendarPage'
+export { AnalyticsPage } from './AnalyticsPage'
+export { JournalsPage } from './JournalsPage'

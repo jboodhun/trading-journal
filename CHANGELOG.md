@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.6.0...trading-journal-v1.7.0) (2026-06-15)
+
+
+### Features
+
+* [#7](https://github.com/jboodhun/trading-journal/issues/7) add favicon ([888e11d](https://github.com/jboodhun/trading-journal/commit/888e11db9b17453e433b00d5d50656c4c7610fe5))
+
 ## [1.6.0](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.5.0...trading-journal-v1.6.0) (2026-06-11)
 
 

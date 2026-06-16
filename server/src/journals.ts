@@ -10,24 +10,30 @@ interface JournalRow {
   starting_balance: number
   archived: number
   created_at: string
+  trade_count: number
+  net_pnl: number
 }
 
-// Trade stats are zeroed until the trades feature lands — the API shape stays
-// forward-compatible with the full journal model (tradeCount, netPnl, currentBalance).
 const toApi = (row: JournalRow) => ({
   id: row.id,
   name: row.name,
   description: row.description,
   startingBalance: row.starting_balance,
-  currentBalance: row.starting_balance,
+  currentBalance: Math.round((row.starting_balance + row.net_pnl) * 100) / 100,
   archived: row.archived === 1,
   createdAt: row.created_at,
-  tradeCount: 0,
-  netPnl: 0,
+  tradeCount: row.trade_count,
+  netPnl: Math.round(row.net_pnl * 100) / 100,
 })
 
+const selectWithStats = `
+  SELECT j.*, COUNT(t.id) AS trade_count, COALESCE(SUM(t.pnl), 0) AS net_pnl
+  FROM journals j
+  LEFT JOIN trades t ON t.journal_id = j.id
+`
+
 function getJournal(id: number): JournalRow | undefined {
-  return db.prepare('SELECT * FROM journals WHERE id = ?').get(id) as unknown as
+  return db.prepare(`${selectWithStats} WHERE j.id = ? GROUP BY j.id`).get(id) as unknown as
     | JournalRow
     | undefined
 }
@@ -51,7 +57,7 @@ function parseInput(
 
 journalsRouter.get('/', (_req, res) => {
   const rows = db
-    .prepare('SELECT * FROM journals ORDER BY archived ASC, created_at ASC')
+    .prepare(`${selectWithStats} GROUP BY j.id ORDER BY j.archived ASC, j.created_at ASC`)
     .all() as unknown as JournalRow[]
   res.json(rows.map(toApi))
 })
@@ -86,12 +92,23 @@ journalsRouter.put('/:id', (req, res) => {
   res.json(toApi(getJournal(id)!))
 })
 
+journalsRouter.delete('/:id/trades', (req, res) => {
+  const id = Number(req.params.id)
+  if (!getJournal(id)) {
+    res.status(404).json({ error: 'Journal not found' })
+    return
+  }
+  db.prepare('DELETE FROM trades WHERE journal_id = ?').run(id)
+  res.status(204).end()
+})
+
 journalsRouter.delete('/:id', (req, res) => {
   const id = Number(req.params.id)
   if (!getJournal(id)) {
     res.status(404).json({ error: 'Journal not found' })
     return
   }
+  db.prepare('DELETE FROM trades WHERE journal_id = ?').run(id)
   db.prepare('DELETE FROM journals WHERE id = ?').run(id)
   res.status(204).end()
 })

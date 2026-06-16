@@ -1,11 +1,27 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import type { Journal, JournalInput } from 'types'
+import type { Journal, JournalInput, Trade, TradeInput } from 'types'
 
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
-  tagTypes: ['Journals'],
+  tagTypes: ['Trades', 'Journals'],
   endpoints: (build) => ({
+    getTrades: build.query<Trade[], void>({
+      query: () => 'trades',
+      providesTags: ['Trades'],
+    }),
+    addTrade: build.mutation<Trade, TradeInput>({
+      query: (body) => ({ url: 'trades', method: 'POST', body }),
+      invalidatesTags: ['Trades', 'Journals'],
+    }),
+    updateTrade: build.mutation<Trade, { id: number; input: TradeInput }>({
+      query: ({ id, input }) => ({ url: `trades/${id}`, method: 'PUT', body: input }),
+      invalidatesTags: ['Trades', 'Journals'],
+    }),
+    deleteTrade: build.mutation<void, number>({
+      query: (id) => ({ url: `trades/${id}`, method: 'DELETE' }),
+      invalidatesTags: ['Trades', 'Journals'],
+    }),
     getJournals: build.query<Journal[], void>({
       query: () => 'journals',
       providesTags: ['Journals'],
@@ -20,16 +36,25 @@ export const api = createApi({
     }),
     deleteJournal: build.mutation<void, number>({
       query: (id) => ({ url: `journals/${id}`, method: 'DELETE' }),
-      invalidatesTags: ['Journals'],
+      invalidatesTags: ['Journals', 'Trades'],
+    }),
+    deleteJournalTrades: build.mutation<void, number>({
+      query: (id) => ({ url: `journals/${id}/trades`, method: 'DELETE' }),
+      invalidatesTags: ['Journals', 'Trades'],
     }),
   }),
 })
 
 export const {
+  useGetTradesQuery,
+  useAddTradeMutation,
+  useUpdateTradeMutation,
+  useDeleteTradeMutation,
   useGetJournalsQuery,
   useAddJournalMutation,
   useUpdateJournalMutation,
   useDeleteJournalMutation,
+  useDeleteJournalTradesMutation,
 } = api
 
 export function apiErrorMessage(error: unknown): string {

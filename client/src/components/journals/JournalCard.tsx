@@ -1,3 +1,4 @@
+import { Link, useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
 import { Archive, ArchiveRestore, Pencil, Trash2 } from 'lucide-react'
 import { formatDate, formatMoney, formatPnl, pnlClass } from 'lib'
@@ -10,13 +11,17 @@ interface JournalCardProps {
   onDelete: (journal: Journal) => void
 }
 
-// The journal-detail page (/journals/:id) is a future ticket, so the card name
-// is plain text for now — re-link it to <Link to={`/journals/${journal.id}`}> when 003 lands.
 export function JournalCard({ journal, onEdit, onToggleArchive, onDelete }: JournalCardProps) {
+  const navigate = useNavigate()
   return (
-    <div className={clsx('card journal-card', journal.archived && 'archived')}>
+    <div
+      className={clsx('card journal-card', journal.archived && 'archived')}
+      onClick={() => navigate(`/journals/${journal.id}`)}
+    >
       <div className="journal-head">
-        <span className="journal-name">{journal.name}</span>
+        <Link to={`/journals/${journal.id}`} className="journal-name">
+          {journal.name}
+        </Link>
         {journal.archived && <span className="badge muted">Archived</span>}
       </div>
       <p className="journal-desc">{journal.description ?? 'No description'}</p>
@@ -42,7 +47,7 @@ export function JournalCard({ journal, onEdit, onToggleArchive, onDelete }: Jour
       </div>
       <div className="journal-actions">
         <span className="journal-date">Created {formatDate(journal.createdAt)}</span>
-        <span>
+        <span onClick={(event) => event.stopPropagation()}>
           <button className="btn-icon" aria-label="Edit journal" onClick={() => onEdit(journal)}>
             <Pencil size={15} />
           </button>

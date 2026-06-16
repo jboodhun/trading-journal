@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.7.0...trading-journal-v1.8.0) (2026-06-16)
+
+
+### Features
+
+* [#35](https://github.com/jboodhun/trading-journal/issues/35) create trade journal details page ([#40](https://github.com/jboodhun/trading-journal/issues/40)) ([9c88470](https://github.com/jboodhun/trading-journal/commit/9c8847035787e316dd8da8a5bce2341b9f0054d8))
+
 ## [1.7.0](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.6.0...trading-journal-v1.7.0) (2026-06-15)
 
 

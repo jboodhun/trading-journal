@@ -197,6 +197,18 @@ textarea.input {
   @apply rounded-lg bg-loss/10 px-3 py-2 text-sm text-loss;
 }
 
+.field-desc {
+  @apply text-xs text-faint;
+}
+
+.field-error {
+  @apply text-xs font-medium text-loss;
+}
+
+.field-required {
+  @apply text-loss;
+}
+
 .segment {
   @apply grid grid-cols-2 gap-1 rounded-lg border border-edge bg-raised p-1;
 }

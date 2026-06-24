@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import clsx from 'clsx'
+import { Input } from 'components/ui'
 import { useSetups } from 'hooks'
 import { formatDuration, formatMoney, formatPercent, formatPnl, pnlClass } from 'lib'
 import type { Direction } from 'types'
@@ -39,19 +40,16 @@ interface InputFieldProps {
 function InputField({ label, field, type = 'text', placeholder, list, autoFocus }: InputFieldProps) {
   const { state, actions } = useTradeFormContext()
   return (
-    <label className="field">
-      <span className="field-label">{label}</span>
-      <input
-        className="input"
-        type={type}
-        step={type === 'number' ? 'any' : undefined}
-        placeholder={placeholder}
-        list={list}
-        autoFocus={autoFocus}
-        value={state[field]}
-        onChange={(event) => actions.update((s) => ({ ...s, [field]: event.target.value }))}
-      />
-    </label>
+    <Input
+      label={label}
+      type={type}
+      step={type === 'number' ? 'any' : undefined}
+      placeholder={placeholder}
+      list={list}
+      autoFocus={autoFocus}
+      value={state[field]}
+      onChange={(value) => actions.update((s) => ({ ...s, [field]: value }))}
+    />
   )
 }
 

@@ -1,3 +1,5 @@
+import { Input } from 'components/ui'
+
 interface JournalFormFieldsProps {
   name: string
   description: string
@@ -17,28 +19,22 @@ export function JournalFormFields({
 }: JournalFormFieldsProps) {
   return (
     <>
-      <label className="field">
-        <span className="field-label">Name</span>
-        <input
-          className="input"
-          placeholder="Demo journal, Backtest — breakouts…"
-          value={name}
-          onChange={(event) => onName(event.target.value)}
-          autoFocus
-        />
-      </label>
-      <label className="field">
-        <span className="field-label">Starting balance</span>
-        <input
-          className="input"
-          type="number"
-          step="any"
-          min="0"
-          placeholder="10000"
-          value={startingBalance}
-          onChange={(event) => onStartingBalance(event.target.value)}
-        />
-      </label>
+      <Input
+        label="Name"
+        placeholder="Demo journal, Backtest — breakouts…"
+        value={name}
+        onChange={onName}
+        autoFocus
+      />
+      <Input
+        label="Starting balance"
+        type="number"
+        step="any"
+        min="0"
+        placeholder="10000"
+        value={startingBalance}
+        onChange={onStartingBalance}
+      />
       <label className="field">
         <span className="field-label">Description</span>
         <textarea

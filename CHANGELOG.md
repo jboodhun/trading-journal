@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.8.0...trading-journal-v1.9.0) (2026-06-24)
+
+
+### Features
+
+* add text input component ([#42](https://github.com/jboodhun/trading-journal/issues/42)) ([12bd46d](https://github.com/jboodhun/trading-journal/commit/12bd46da6d5cda816c009a857abc53b622203e53))
+
 ## [1.8.0](https://github.com/jboodhun/trading-journal/compare/trading-journal-v1.7.0...trading-journal-v1.8.0) (2026-06-16)
 
 
